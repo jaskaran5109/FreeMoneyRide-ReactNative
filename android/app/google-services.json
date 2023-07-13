@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "912325212857",
+    "project_id": "moneyfreeride",
+    "storage_bucket": "moneyfreeride.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:912325212857:android:63533bef3d4834d7537968",
+        "android_client_info": {
+          "package_name": "com.moneyfreeride"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "912325212857-1fa0s2ue762a42s3dar0gt975tap5jjd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAoIx4TSnWzZ78hJE5de7Vybmk4WzEjfcc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "912325212857-1fa0s2ue762a42s3dar0gt975tap5jjd.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
