@@ -158,7 +158,7 @@ const OfferColumnsScreen = ({navigation}) => {
       {!loading &&
         filteredOffers.map(data => {
           return (
-            data?.isEnabled && (
+            data?.isEnabled && data?.isShopping === false && (
               <TouchableOpacity
                 onPress={() =>
                   navigation.navigate('OfferDetail', {

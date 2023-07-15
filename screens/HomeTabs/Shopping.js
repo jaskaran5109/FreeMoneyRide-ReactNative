@@ -17,11 +17,13 @@ import {useDispatch, useSelector} from 'react-redux';
 import {getAllOffers} from '../../redux/actions/offer';
 import {getMyProfile, getUserReport} from '../../redux/actions/user';
 import {getUserEarnings} from '../../redux/actions/payout';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Shopping = ({navigation}) => {
   const dispatch = useDispatch();
   const {offers, error, message, loading} = useSelector(state => state.offer);
-  const {user, earnings} = useSelector(state => state.user);
+  const {earnings} = useSelector(state => state.payout);
+  const {user} = useSelector(state => state.user);
   const [refreshing, setRefreshing] = useState(false);
   const [filteredOffers, setFilteredOffers] = useState([]);
 
@@ -35,6 +37,8 @@ const Shopping = ({navigation}) => {
       filterOffers();
     }, 1000);
   }, []);
+
+
   useEffect(() => {
     dispatch(getMyProfile());
     dispatch(getAllOffers());
@@ -69,10 +73,7 @@ const Shopping = ({navigation}) => {
     }
   }, [loading, fadeAnim]);
 
-  useEffect(() => {
-    filterOffers();
-  }, [dispatch]);
-
+  
   const filterOffers = () => {
     if (
       offers &&
@@ -88,10 +89,13 @@ const Shopping = ({navigation}) => {
       setFilteredOffers(filtered);
     }
   };
-
+  useEffect(() => {
+    filterOffers();
+  }, [dispatch]);
   const shoppingOffers = filteredOffers.filter(
     data => data?.isEnabled && data?.isShopping,
   );
+  
   return (
     <ScrollView
       style={{flex: 1}}
@@ -106,7 +110,7 @@ const Shopping = ({navigation}) => {
           </Animated.View>
         </View>
       </Modal>
-      {!loading && shoppingOffers.length > 0 ? (
+      {!loading && shoppingOffers.length>0 ? (
         shoppingOffers.map(data => (
           <TouchableOpacity
             onPress={() =>
