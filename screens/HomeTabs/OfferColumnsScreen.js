@@ -14,7 +14,7 @@ import {
 import {CurrencyList} from '../../CurrencyList';
 import {TouchableOpacity} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
-import {getAllOffers, getSingleOffer} from '../../redux/actions/offer';
+import {getAllAppOffers, getAllOffers, getSingleOffer} from '../../redux/actions/offer';
 import {
   getMyProfile,
   getUserReport,
@@ -26,57 +26,32 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const OfferColumnsScreen = ({navigation}) => {
   const dispatch = useDispatch();
-  const {offers, loading} = useSelector(state => state.offer);
-  const {reports} = useSelector(state => state.user);
+  const {appoffers, loading, message} = useSelector(state => state.offer);
+  const {user,reports} = useSelector(state => state.user);
   const {earnings} = useSelector(state => state.payout);
   const [refreshing, setRefreshing] = useState(false);
-  const [filteredOffers, setFilteredOffers] = useState([]);
 
-  const [fadeAnim] = useState(new Animated.Value(0));
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
     setTimeout(() => {
+      dispatch(getUserEarnings(user?._id));
       setRefreshing(false);
-      dispatch(getMyProfile());
       handleReport();
-      filterOffers();
+      dispatch(getAllAppOffers(user?._id));
     }, 1000);
   }, []);
-  let user;
   useEffect(() => {
-    user=AsyncStorage.getItem("user")
     dispatch(getMyProfile());
-    dispatch(getAllOffers());
-    dispatch(getUserReport('', user?._id));
     dispatch(getUserEarnings(user?._id));
-    filterOffers();
+    dispatch(getAllAppOffers(user?._id));
+    dispatch(getUserReport('', user?._id));
   }, [dispatch, refreshing]);
 
   useEffect(() => {
-    if (loading) {
-      Animated.timing(fadeAnim, {
-        toValue: 1,
-        duration: 300,
-        easing: Easing.linear,
-        useNativeDriver: true,
-      }).start();
-    } else {
-      Animated.timing(fadeAnim, {
-        toValue: 0,
-        duration: 300,
-        easing: Easing.linear,
-        useNativeDriver: true,
-      }).start();
-    }
-  }, [loading, fadeAnim]);
-
-  useEffect(() => {
-    dispatch(getMyProfile());
-    filterOffers();
-  }, [dispatch]);
-
-  const handleReport = async() => {
+    dispatch(getAllAppOffers(user?._id));
+  }, [])
+  const handleReport = async () => {
     try {
       if (reports && Array.isArray(reports)) {
         const filteredReports = reports.filter(
@@ -85,7 +60,10 @@ const OfferColumnsScreen = ({navigation}) => {
         for (const report of filteredReports) {
           if (earnings && Array.isArray(earnings)) {
             const isFound = earnings.some(element => {
-              if (element.offerId === report.OfferID.toString() && element?.userId === report.Aff_Sub_2) {
+              if (
+                element.offerId === report.OfferID.toString() &&
+                element?.userId === report.Aff_Sub_2
+              ) {
                 return true;
               }
               return false;
@@ -122,90 +100,67 @@ const OfferColumnsScreen = ({navigation}) => {
     isFirstRender.current = false;
   }, [earnings]);
 
-  useEffect(() => {
-    filterOffers();
-  }, [offers, earnings]);
-  const filterOffers = () => {
-    if (
-      offers &&
-      Array.isArray(offers) &&
-      offers.filter &&
-      earnings &&
-      Array.isArray(earnings) &&
-      earnings.filter
-    ) {
-      const filtered = offers.filter(offer => {
-        return !earnings.some(earning => earning.offerId === offer.externalId);
-      });
-      setFilteredOffers(filtered);
-    }
-  };
-
   return (
     <ScrollView
       style={{flex: 1}}
       refreshControl={
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
       }>
-      <Modal visible={loading} transparent={true}>
-        <View style={styles.modalContainer}>
-          <Animated.View
-            style={[styles.indicatorContainer, {opacity: fadeAnim}]}>
-            <ActivityIndicator size="large" color="#0000ff" />
-          </Animated.View>
-        </View>
-      </Modal>
-      {!loading &&
-        filteredOffers.map(data => {
+      {!loading && appoffers ? (
+        appoffers.map(data => {
           return (
-            data?.isEnabled && data?.isShopping === false && (
-              <TouchableOpacity
-                onPress={() =>
-                  navigation.navigate('OfferDetail', {
-                    itemId: data?._id,
-                  })
-                }
-                key={data?._id}>
-                <View style={styles.container}>
-                  <Image
-                    style={styles.offerImage}
-                    source={{
-                      uri: data?.logo,
-                    }}
-                  />
-                  <View style={styles.offerDetails}>
-                    <Text style={styles.offerTitle}>{data?.offerName}</Text>
-                    <Text style={styles.offerGeo}>{data?.geo}</Text>
-                    <View style={{alignSelf: 'flex-start'}}>
-                      <TouchableOpacity
-                        style={{
-                          backgroundColor: '#005249',
-                          borderRadius: 10,
-                          alignItems: 'center',
-                          padding: 10,
-                        }}
-                        onPress={() =>
-                          navigation.navigate('OfferDetail', {
-                            itemId: data?._id,
-                          })
-                        }>
-                        <Text style={styles.offerPrice}>
-                          {' '}
-                          Get{' '}
-                          {CurrencyList.map(list => {
-                            if (list.code === data?.geo) return list.symbol;
-                          })}
-                          ₹{data?.po}
-                        </Text>
-                      </TouchableOpacity>
-                    </View>
+            <TouchableOpacity
+              onPress={() =>
+                navigation.navigate('OfferDetail', {
+                  itemId: data?._id,
+                })
+              }
+              key={data?._id}>
+              <View style={styles.container}>
+                <Image
+                  style={styles.offerImage}
+                  source={{
+                    uri: data?.logo,
+                  }}
+                />
+                <View style={styles.offerDetails}>
+                  <Text style={styles.offerTitle}>{data?.offerName}</Text>
+                  <Text style={styles.offerGeo}>{data?.geo}</Text>
+                  <View style={{alignSelf: 'flex-start'}}>
+                    <TouchableOpacity
+                      style={{
+                        backgroundColor: '#005249',
+                        borderRadius: 10,
+                        alignItems: 'center',
+                        padding: 10,
+                      }}
+                      onPress={() =>
+                        navigation.navigate('OfferDetail', {
+                          itemId: data?._id,
+                        })
+                      }>
+                      <Text style={styles.offerPrice}>
+                        {' '}
+                        Get{' '}
+                        {CurrencyList.map(list => {
+                          if (list.code === data?.geo) return list.symbol;
+                        })}
+                        ₹{data?.po}
+                      </Text>
+                    </TouchableOpacity>
                   </View>
                 </View>
-              </TouchableOpacity>
-            )
+              </View>
+            </TouchableOpacity>
           );
-        })}
-        <Loader loading={loading}/>
+        })
+      ) : (
+        <Text style={{textAlign: 'center', margin: 20, color: '#005249'}}>
+          No App Offers Found
+        </Text>
+      )}
+
+      <Loader loading={loading} />
     </ScrollView>
   );
 };

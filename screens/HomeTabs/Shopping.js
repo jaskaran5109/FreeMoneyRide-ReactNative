@@ -14,18 +14,16 @@ import {
 import {CurrencyList} from '../../CurrencyList';
 import {TouchableOpacity} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
-import {getAllOffers} from '../../redux/actions/offer';
+import {getAllOffers, getAllShoppingOffers} from '../../redux/actions/offer';
 import {getMyProfile, getUserReport} from '../../redux/actions/user';
 import {getUserEarnings} from '../../redux/actions/payout';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Shopping = ({navigation}) => {
   const dispatch = useDispatch();
-  const {offers, error, message, loading} = useSelector(state => state.offer);
-  const {earnings} = useSelector(state => state.payout);
+  const {shoppingOffers, loading} = useSelector(state => state.offer);
   const {user} = useSelector(state => state.user);
   const [refreshing, setRefreshing] = useState(false);
-  const [filteredOffers, setFilteredOffers] = useState([]);
 
   const [fadeAnim] = useState(new Animated.Value(0));
 
@@ -33,68 +31,16 @@ const Shopping = ({navigation}) => {
     setRefreshing(true);
     setTimeout(() => {
       setRefreshing(false);
-      dispatch(getMyProfile());
-      filterOffers();
     }, 1000);
   }, []);
 
-
   useEffect(() => {
     dispatch(getMyProfile());
-    dispatch(getAllOffers());
-    dispatch(getUserReport('', user?._id));
     dispatch(getUserEarnings(user?._id));
-    filterOffers();
-    if (error) {
-      ToastAndroid.show(`${error}`, ToastAndroid.SHORT);
-      dispatch({type: 'clearError'});
-    }
-    if (message) {
-      ToastAndroid.show(`${message}`, ToastAndroid.SHORT);
-      dispatch({type: 'clearMessage'});
-    }
+    dispatch(getAllShoppingOffers(user?._id));
+    dispatch(getUserReport('', user?._id));
   }, [dispatch, refreshing]);
-
-  useEffect(() => {
-    if (loading) {
-      Animated.timing(fadeAnim, {
-        toValue: 1,
-        duration: 300,
-        easing: Easing.linear,
-        useNativeDriver: true,
-      }).start();
-    } else {
-      Animated.timing(fadeAnim, {
-        toValue: 0,
-        duration: 300,
-        easing: Easing.linear,
-        useNativeDriver: true,
-      }).start();
-    }
-  }, [loading, fadeAnim]);
-
   
-  const filterOffers = () => {
-    if (
-      offers &&
-      Array.isArray(offers) &&
-      offers.filter &&
-      earnings &&
-      Array.isArray(earnings) &&
-      earnings.filter
-    ) {
-      const filtered = offers.filter(offer => {
-        return !earnings.some(earning => earning.offerId === offer.externalId);
-      });
-      setFilteredOffers(filtered);
-    }
-  };
-  useEffect(() => {
-    filterOffers();
-  }, [dispatch]);
-  const shoppingOffers = filteredOffers.filter(
-    data => data?.isEnabled && data?.isShopping,
-  );
   
   return (
     <ScrollView
@@ -102,60 +48,54 @@ const Shopping = ({navigation}) => {
       refreshControl={
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
       }>
-      <Modal visible={loading} transparent={true}>
-        <View style={styles.modalContainer}>
-          <Animated.View
-            style={[styles.indicatorContainer, {opacity: fadeAnim}]}>
-            <ActivityIndicator size="large" color="#0000ff" />
-          </Animated.View>
-        </View>
-      </Modal>
-      {!loading && shoppingOffers.length>0 ? (
-        shoppingOffers.map(data => (
-          <TouchableOpacity
-            onPress={() =>
-              navigation.navigate('OfferDetail', {
-                itemId: data?._id,
-              })
-            }
-            key={data?._id}>
-            <View style={styles.container}>
-              <Image
-                style={styles.offerImage}
-                source={{
-                  uri: data?.logo,
-                }}
-              />
-              <View style={styles.offerDetails}>
-                <Text style={styles.offerTitle}>{data?.offerName}</Text>
-                <Text style={styles.offerGeo}>{data?.geo}</Text>
-                <View style={{alignSelf: 'flex-start'}}>
-                  <TouchableOpacity
-                    style={{
-                      backgroundColor: '#005249',
-                      borderRadius: 10,
-                      alignItems: 'center',
-                      padding: 10,
-                    }}
-                    onPress={() =>
-                      navigation.navigate('OfferDetail', {
-                        itemId: data?._id,
-                      })
-                    }>
-                    <Text style={styles.offerPrice}>
-                      {' '}
-                      Get{' '}
-                      {CurrencyList.map(list => {
-                        if (list.code === data?.geo) return list.symbol;
-                      })}
-                      ₹{data?.po}
-                    </Text>
-                  </TouchableOpacity>
+      {!loading && shoppingOffers ? (
+        shoppingOffers.map(data => {
+          return (
+            <TouchableOpacity
+              onPress={() =>
+                navigation.navigate('OfferDetail', {
+                  itemId: data?._id,
+                })
+              }
+              key={data?._id}>
+              <View style={styles.container}>
+                <Image
+                  style={styles.offerImage}
+                  source={{
+                    uri: data?.logo,
+                  }}
+                />
+                <View style={styles.offerDetails}>
+                  <Text style={styles.offerTitle}>{data?.offerName}</Text>
+                  <Text style={styles.offerGeo}>{data?.geo}</Text>
+                  <View style={{alignSelf: 'flex-start'}}>
+                    <TouchableOpacity
+                      style={{
+                        backgroundColor: '#005249',
+                        borderRadius: 10,
+                        alignItems: 'center',
+                        padding: 10,
+                      }}
+                      onPress={() =>
+                        navigation.navigate('OfferDetail', {
+                          itemId: data?._id,
+                        })
+                      }>
+                      <Text style={styles.offerPrice}>
+                        {' '}
+                        Get{' '}
+                        {CurrencyList.map(list => {
+                          if (list.code === data?.geo) return list.symbol;
+                        })}
+                        ₹{data?.po}
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
                 </View>
               </View>
-            </View>
-          </TouchableOpacity>
-        ))
+            </TouchableOpacity>
+          );
+        })
       ) : (
         <Text style={{textAlign: 'center', margin: 20, color: '#005249'}}>
           No Shopping Offers Found

@@ -33,5 +33,32 @@ export const offerReducer = createReducer(
       state.loading = false;
       state.error = action.payload;
     },
+
+
+    offerAppRequest: (state) => {
+      state.loading = true;
+    },
+    offerAppSuccess: (state, action) => {
+      state.loading = false;
+      state.appoffers = action.payload.appOffers;
+      state.message = action.payload.message;
+    },
+    offerAppFail: (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    },
+
+    offerShoppingRequest: (state) => {
+      state.loading = true;
+    },
+    offerShoppingSuccess: (state, action) => {
+      state.loading = false;
+      state.shoppingOffers  = action.payload.shoppingOffers;
+      state.message = action.payload.message;
+    },
+    offerShoppingFail: (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    },
   }
 );

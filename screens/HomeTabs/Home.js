@@ -20,7 +20,7 @@ import {
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllOffers } from "../../redux/actions/offer";
+import { getAllAppOffers } from "../../redux/actions/offer";
 import { getUserEarnings } from "../../redux/actions/payout";
 import Shopping from "./Shopping";
 
@@ -31,7 +31,7 @@ const Home = () => {
   const { user, error, message } = useSelector((state) => state.user);
 
   useEffect(() => {
-    dispatch(getAllOffers());
+    dispatch(getAllAppOffers(user?._id));
     if (error) {
       ToastAndroid.show(`${error}`, ToastAndroid.SHORT);
       dispatch({ type: 'clearError' });
