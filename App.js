@@ -1,5 +1,5 @@
 import React, {useEffect, useMemo, useState} from 'react';
-import {NavigationContainer} from '@react-navigation/native';
+import {NavigationContainer, useNavigation} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import Home from './screens/HomeTabs/Home';
 import Register from './screens/Authentication/Register';
@@ -21,6 +21,8 @@ import ResetPassword from './screens/Authentication/ResetPassword';
 import messaging from '@react-native-firebase/messaging';
 import {ForegroundNotification} from './screens/Components/ForegroundNotification';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import SplashScreen from "react-native-splash-screen";
+
 
 const Stack = createStackNavigator();
 
@@ -35,7 +37,11 @@ function App() {
     storageUser();
     storageOffer()
   }, [dispatch]);
-
+  
+  useEffect(() => {
+    SplashScreen.hide();
+  }, [])
+  
   const storageUser = async () => {
     let userr = await AsyncStorage.getItem('user');
     let isAuthenticatedd = await AsyncStorage.getItem('isAuthenticated');
@@ -49,7 +55,7 @@ function App() {
 
     if (!isAuthenticatedd && isAuthenticated) {
       try {
-        await AsyncStorage.setItem('isAuthenticated', isAuthenticated);
+        await AsyncStorage.setItem('isAuthenticated', isAuthenticated.toString());
       } catch (error) {
         console.log(error);
       }
@@ -98,6 +104,8 @@ const AuthNavigator = () => {
 
 const AppNavigator = () => {
   const dispatch = useDispatch();
+  const navigation = useNavigation();
+
   const {user} = useSelector(state => state.user);
   useEffect(() => {
     requestUserPermission();
@@ -129,12 +137,25 @@ const AppNavigator = () => {
       }
     }
   };
+
+  useEffect(() => {
+    checkWelcomeStatus();
+  }, []);
+
+  const checkWelcomeStatus = async () => {
+    const welcomeDisplayed = await AsyncStorage.getItem('Welcome');
+    if (welcomeDisplayed === 'true') {
+      navigation.navigate('HomeTab');
+    }
+  };
+
   return (
     <Stack.Navigator
       initialRouteName="Welcome"
       screenOptions={{
         headerShown: false,
       }}>
+      
       <Stack.Screen name="Welcome" component={Welcome} />
       <Stack.Screen name="HomeTab" component={Home} />
       <Stack.Screen name="OfferDetail" component={OfferDetailsScreen} />

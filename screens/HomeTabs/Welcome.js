@@ -1,114 +1,48 @@
-import React, {useState, useEffect} from 'react';
-import {Animated, Image, StyleSheet, Text, View} from 'react-native';
-import AppIntroSlider from 'react-native-app-intro-slider';
-import MoneyRideFirst from '../../assets/mobile-phone.png';
-import Home from './Home';
+import React, {useState} from 'react';
+import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import WelcomeImage from '../../assets/welcome.png';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const slides = [
-  {
-    key: 'one',
-    title:
-      'Have Free Time ? Make worth it , complete some easy tasks and make a lot of real Money',
-    text: 'Just click on the offers ,Read the steps carefully and Follow them and get the REWARDS',
-    image: MoneyRideFirst,
-    backgroundColor: '#005249',
-  },
-];
-
-const Welcome = () => {
-  const [showRealApp, setShowRealApp] = useState(false);
-  const [animation] = useState(new Animated.Value(0));
-
-  const startAnimation = () => {
-    Animated.timing(animation, {
-      toValue: 1,
-      duration: 1000, // Adjust the duration as desired
-      useNativeDriver: true,
-    }).start();
+const Welcome = ({navigation}) => {
+  const handleSkip = async () => {
+    await AsyncStorage.setItem('Welcome', 'true');
+    navigation.navigate('HomeTab');
   };
 
-
-  useEffect(() => {
-    if (!showRealApp) {
-      startAnimation();
-    }
-  }, [showRealApp]);
-
-  const renderItem = ({item, index}) => {
-    if (index === 0) {
-      const slideTransform = animation.interpolate({
-        inputRange: [0, 1],
-        outputRange: [300, 0],
-      });
-
-      const imageTransform = animation.interpolate({
-        inputRange: [0, 1],
-        outputRange: [800, 1],
-      });
-
-      return (
-        <Animated.View
-          style={[
-            styles.slide,
-            {
-              backgroundColor: item.backgroundColor,
-              transform: [{translateY: slideTransform}],
-            },
-          ]}>
-          <Animated.Text style={[styles.title, {opacity: animation}]}>
-            {item.title}
-          </Animated.Text>
-          <Animated.Image
-            source={item.image}
-            style={[
-              styles.image,
-              {opacity: animation, transform: [{scale: imageTransform}]},
-            ]}
-          />
-          <Animated.Text style={[styles.text, {opacity: animation}]}>
-            {item.text}
-          </Animated.Text>
-        </Animated.View>
-      );
-    }
-  };
-  const onDone = () => {
-    setShowRealApp(true);
-  };
-
-  if (showRealApp) {
-    return <Home />;
-  } else {
-    return (
-      <AppIntroSlider renderItem={renderItem} data={slides} onDone={onDone} />
-    );
-  }
+  return (
+    <View style={styles.container} activeOpacity={1}>
+      <Image source={WelcomeImage} style={styles.image} />
+      <TouchableOpacity style={styles.textContainer} onPress={handleSkip}>
+        <Text style={styles.text}>SKIP</Text>
+      </TouchableOpacity>
+    </View>
+  );
 };
 
 const styles = StyleSheet.create({
-  slide: {
+  container: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'center',
-    padding: 20,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 16,
-    color: '#fff',
-    textAlign: 'center',
+    backgroundColor: 'white',
   },
   image: {
-    width: 200,
-    height: 200,
-    resizeMode: 'contain',
-    marginBottom: 16,
+    width: '100%',
+    height: '100%',
+  },
+  textContainer: {
+    position: 'absolute',
+    bottom: 30,
+    alignSelf: 'center',
+    backgroundColor: 'black',
+    paddingVertical: 8,
+    paddingHorizontal: 100,
+    borderRadius: 10,
   },
   text: {
-    fontSize: 16,
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: 'white',
     textAlign: 'center',
-    color: '#fff',
   },
 });
 
