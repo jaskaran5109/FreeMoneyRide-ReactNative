@@ -21,11 +21,13 @@ import {
   updateUserWallet,
 } from '../../redux/actions/user';
 import {createUserEarnings, getUserEarnings} from '../../redux/actions/payout';
+import Loader from '../../components/Loader';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const OfferColumnsScreen = ({navigation}) => {
   const dispatch = useDispatch();
   const {offers, loading} = useSelector(state => state.offer);
-  const {user, reports} = useSelector(state => state.user);
+  const {reports} = useSelector(state => state.user);
   const {earnings} = useSelector(state => state.payout);
   const [refreshing, setRefreshing] = useState(false);
   const [filteredOffers, setFilteredOffers] = useState([]);
@@ -41,7 +43,9 @@ const OfferColumnsScreen = ({navigation}) => {
       filterOffers();
     }, 1000);
   }, []);
+  let user;
   useEffect(() => {
+    user=AsyncStorage.getItem("user")
     dispatch(getMyProfile());
     dispatch(getAllOffers());
     dispatch(getUserReport('', user?._id));
@@ -201,6 +205,7 @@ const OfferColumnsScreen = ({navigation}) => {
             )
           );
         })}
+        <Loader loading={loading}/>
     </ScrollView>
   );
 };

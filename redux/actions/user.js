@@ -227,9 +227,9 @@ export const forgotPassword = email => async dispatch => {
 
 export const resetPassword = (token, password) => async dispatch => {
   try {
-    dispatch({ type: 'resetPasswordRequest' });
+    dispatch({type: 'resetPasswordRequest'});
 
-    const { data } = await axios.put(
+    const {data} = await axios.put(
       `${server}/admin/resetpassword/${token}`,
       {
         password,
@@ -239,14 +239,37 @@ export const resetPassword = (token, password) => async dispatch => {
           'Content-Type': 'application/json',
         },
         withCredentials: true,
-      }
+      },
     );
 
-    dispatch({ type: 'resetPasswordSuccess', payload: data.message });
+    dispatch({type: 'resetPasswordSuccess', payload: data.message});
   } catch (error) {
     dispatch({
       type: 'resetPasswordFail',
       payload: error.response.data.message,
     });
+  }
+};
+
+export const createFcmToken = (phoneNumber, deviceToken) => async dispatch => {
+  try {
+    dispatch({type: 'deviceTokenRequest'});
+
+    const {data} = await axios.post(
+      `${server}/device-token`,
+      {
+        phoneNumber,
+        deviceToken,
+      },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        withCredentials: true,
+      },
+    );
+    dispatch({type: 'deviceTokenSuccess', payload: data});
+  } catch (error) {
+    dispatch({type: 'deviceTokenFail', payload: error.response.data.message});
   }
 };

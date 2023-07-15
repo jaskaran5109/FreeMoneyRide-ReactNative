@@ -56,7 +56,7 @@ const ForgetPassword = ({navigation}) => {
               fontWeight: 'bold',
               marginLeft: 20,
             }}>
-            Money Free Ride
+            Free Money Ride
           </Text>
         </View>
 

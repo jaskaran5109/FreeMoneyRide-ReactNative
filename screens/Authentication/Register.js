@@ -207,7 +207,7 @@ const Register = ({navigation}) => {
           <View
             style={{height: '45%', backgroundColor: '#005249', padding: 20}}>
             <Text style={{fontSize: 20, color: 'white', fontWeight: 'bold'}}>
-              Money Free Ride
+              Free Money Ride
             </Text>
             <View
               style={{
@@ -445,7 +445,7 @@ const Register = ({navigation}) => {
     <View style={{backgroundColor: '#005249', flex: 1}}>
       <View style={{height: '58%', backgroundColor: '#005249', padding: 20}}>
         <Text style={{fontSize: 20, color: 'white', fontWeight: 'bold'}}>
-          Money Free Ride
+          Free Money Ride
         </Text>
         <View
           style={{

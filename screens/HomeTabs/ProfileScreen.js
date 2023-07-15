@@ -13,10 +13,12 @@ import ExitIcon from '../../assets/exit.png';
 import PolicyIcon from '../../assets/file.png';
 import ArrowIcon from '../../assets/right-arrow.png';
 import TermsIcons from '../../assets/terms-and-conditions.png';
-import MoneyRide from '../../assets/moneyride.png';
 import {logout} from '../../redux/actions/user';
 import {useDispatch, useSelector} from 'react-redux';
 import Loader from '../../components/Loader';
+import FreeMoneyRideIcon from "../../assets/freemoneyride.png";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 const ProfileScreen = () => {
   const {user, loading} = useSelector(state => state.user);
@@ -33,6 +35,7 @@ const ProfileScreen = () => {
         text: 'OK',
         onPress: () => {
           dispatch(logout());
+          AsyncStorage.setItem('user', '');
         },
       },
     ]);
@@ -48,8 +51,12 @@ const ProfileScreen = () => {
           width: 150,
           alignSelf: 'center',
           marginTop: 20,
+          objectFit:"contain",
+          borderColor:"black",
+          borderWidth:1,
+          backgroundColor:"black"
         }}
-        source={MoneyRide}
+        source={FreeMoneyRideIcon}
       />
       <View style={{marginTop: 20}}>
         <Text

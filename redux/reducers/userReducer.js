@@ -110,9 +110,11 @@ export const userReducer = createReducer(
       state.error = action.payload;
     },
     clearError: state => {
+      state.loading = false;
       state.error = null;
     },
     clearMessage: state => {
+      state.loading = false;
       state.message = null;
     },
     loadUserReportRequest: state => {
@@ -147,6 +149,17 @@ export const userReducer = createReducer(
       state.message = action.payload;
     },
     resetPasswordFail: (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    },
+    deviceTokenRequest: state => {
+      state.loading = true;
+    },
+    deviceTokenSuccess: (state, action) => {
+      state.loading = false;
+      state.message = action.payload.message;
+    },
+    deviceTokenFail: (state, action) => {
       state.loading = false;
       state.error = action.payload;
     },

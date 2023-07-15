@@ -7,7 +7,9 @@ import ProfileScreen from "./ProfileScreen";
 import WalletIcon from "../../assets/wallet.png";
 import ProfileIcon from "../../assets/user.png";
 import HomeIcon from "../../assets/home.png";
+import ShoppingIcon from "../../assets/shopping.png";
 import TransactionIcon from "../../assets/transactions.png";
+import FreeMoneyRideIcon from "../../assets/freemoneyride.png";
 import { TransitionPresets } from "@react-navigation/stack";
 import {
   Image,
@@ -20,8 +22,7 @@ import { useNavigation } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllOffers } from "../../redux/actions/offer";
 import { getUserEarnings } from "../../redux/actions/payout";
-import { getUserReport } from "../../redux/actions/user";
-import { PhoneContext } from "../../PhoneContext";
+import Shopping from "./Shopping";
 
 const Tab = createBottomTabNavigator();
 
@@ -72,6 +73,27 @@ const Home = () => {
                 tintColor: focused ? "#FFFFFF" : "gray",
               }}
               source={HomeIcon}
+            />
+          ),
+          headerTitle: (props) => (
+            <LogoTitle name={user?.name} amount={user?.wallet.amount} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Shopping"
+        component={Shopping}
+        options={{
+          tabBarLabel: "Shopping",
+          tabBarLabelStyle: { fontSize: 12 },
+          tabBarIcon: ({ focused }) => (
+            <Image
+              style={{
+                width: 20,
+                height: 20,
+                tintColor: focused ? "#FFFFFF" : "gray",
+              }}
+              source={ShoppingIcon}
             />
           ),
           headerTitle: (props) => (

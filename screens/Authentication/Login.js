@@ -66,7 +66,7 @@ const Login = ({navigation}) => {
     <View>
       <View style={{height: '40%', backgroundColor: '#005249', padding: 20}}>
         <Text style={{fontSize: 20, color: 'white', fontWeight: 'bold'}}>
-          Money Free Ride
+          Free Money Ride
         </Text>
         <View
           style={{
@@ -175,7 +175,7 @@ const Login = ({navigation}) => {
         <TouchableOpacity
           style={styles.loginButton}
           onPress={() => handleLogin()}>
-          <Text style={styles.loginButtonText}>{`Login`}</Text>
+          <Text style={styles.loginButtonText}>{loading ? <ActivityIndicator color={'black'}/> : `Login`}</Text>
         </TouchableOpacity>
         <View
           style={{

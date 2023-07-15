@@ -15,9 +15,11 @@ export const offerReducer = createReducer(
       state.error = action.payload;
     },
     clearError: (state) => {
+      state.loading = false;
       state.error = null;
     },
     clearMessage: (state) => {
+      state.loading = false;
       state.message = null;
     },
     getOfferRequest: (state) => {
