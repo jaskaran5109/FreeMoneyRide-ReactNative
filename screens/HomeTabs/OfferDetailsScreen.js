@@ -53,7 +53,7 @@ const OfferDetailsScreen = ({route, navigation}) => {
               </TouchableOpacity>
               <Text
                 style={{fontSize: 20, fontWeight: 'bold', color: '#005249'}}>
-                {offer?.offerName}
+                {offer?.offerName.substring(0,25)}
               </Text>
               <TouchableOpacity
                 style={{

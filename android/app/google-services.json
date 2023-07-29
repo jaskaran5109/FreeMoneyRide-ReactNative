@@ -1,33 +1,33 @@
 {
   "project_info": {
-    "project_number": "912325212857",
-    "project_id": "moneyfreeride",
-    "storage_bucket": "moneyfreeride.appspot.com"
+    "project_number": "854357096769",
+    "project_id": "free-money-ride",
+    "storage_bucket": "free-money-ride.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:912325212857:android:63533bef3d4834d7537968",
+        "mobilesdk_app_id": "1:854357096769:android:d03df06a59a3b1d1ee49c0",
         "android_client_info": {
-          "package_name": "com.moneyfreeride"
+          "package_name": "com.freemoneyride"
         }
       },
       "oauth_client": [
         {
-          "client_id": "912325212857-1fa0s2ue762a42s3dar0gt975tap5jjd.apps.googleusercontent.com",
+          "client_id": "854357096769-uo57smsvuqk4cb7ve54b7mv65vq0276t.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAoIx4TSnWzZ78hJE5de7Vybmk4WzEjfcc"
+          "current_key": "AIzaSyD_UZHMqKGYWmQdePNGFjLQK8v-vA3I7Hk"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "912325212857-1fa0s2ue762a42s3dar0gt975tap5jjd.apps.googleusercontent.com",
+              "client_id": "854357096769-uo57smsvuqk4cb7ve54b7mv65vq0276t.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

@@ -1,10 +1,10 @@
 {
   "name": "FreeMoneyRide",
   "displayName": "FreeMoneyRide",
-  "icon": "./assets/freemoneyride.png",
+  "icon": "./assets/FreeMoneyRide.png",
   "android": {
     "adaptiveIcon": {
-      "foregroundImage": "./assets/freemoneyride.png"
+      "foregroundImage": "./assets/FreeMoneyRide.png"
     }
   }
 }

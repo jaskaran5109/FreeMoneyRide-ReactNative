@@ -129,11 +129,11 @@ const Register = ({navigation}) => {
         ToastAndroid.SHORT,
       );
     }
-    signInWithPhoneNumber(phoneNumber);
-    // dispatch(register(name, email, password,phoneNumber, gender, dateOfBirth));
+    //signInWithPhoneNumber();
+    dispatch(register(name, email, password,phoneNumber, gender, dateOfBirth));
   };
 
-  async function signInWithPhoneNumber(phoneNo) {
+  async function signInWithPhoneNumber() {
     if (!phoneNumber) {
       return ToastAndroid.show(
         'Please enter your phone number',
@@ -142,11 +142,12 @@ const Register = ({navigation}) => {
     }
     try {
       setCodeLoading(true);
-      const confirmation = await auth().signInWithPhoneNumber(phoneNo);
+      const confirmation = await auth().signInWithPhoneNumber(phoneNumber);
       setConfirm(confirmation);
       setCodeLoading(false);
     } catch (error) {
       setCodeLoading(false);
+      ToastAndroid.show(`${error.message}`, ToastAndroid.SHORT);
     }
   }
 
@@ -155,10 +156,11 @@ const Register = ({navigation}) => {
       setCodeLoading(true);
       await confirm.confirm(code);
       setCodeLoading(false);
-      if (!codeloading)
+      if (!codeloading) {
         dispatch(
           register(name, email, password, phoneNumber, gender, dateOfBirth),
         );
+      }
     } catch (error) {
       ToastAndroid.show('Invalid code.', ToastAndroid.SHORT);
       setCodeLoading(false);
@@ -406,7 +408,7 @@ const Register = ({navigation}) => {
                 style={styles.loginButton}
                 onPress={handleRegister}>
                 <Text style={styles.loginButtonText}>
-                  {codeloading ? <ActivityIndicator color={'black'} /> : `Next`}
+                  {codeloading ? <ActivityIndicator color={'black'} /> : `SUBMIT`}
                 </Text>
               </TouchableOpacity>
               <View

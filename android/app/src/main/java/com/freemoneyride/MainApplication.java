@@ -1,4 +1,4 @@
-package com.moneyfreeride;
+package com.freemoneyride;
 
 import android.app.Application;
 import com.facebook.react.PackageList;
