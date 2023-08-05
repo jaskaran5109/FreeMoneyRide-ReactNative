@@ -95,7 +95,7 @@ const WalletScreen = () => {
 
   const handlePayouts = () => {
     dispatch(addRazorPayPayoutId(user?._id, user?.razorpayFundId, amount));
-    dispatch(createUserPayout(user?._id, amount, description));
+    // dispatch(createUserPayout(user?._id, amount, description));
     dispatch(getUserPayouts(user?._id));
 
     setUpi("");
