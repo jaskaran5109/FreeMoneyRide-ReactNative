@@ -21,8 +21,7 @@ import ResetPassword from './screens/Authentication/ResetPassword';
 import messaging from '@react-native-firebase/messaging';
 import {ForegroundNotification} from './screens/Components/ForegroundNotification';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import SplashScreen from "react-native-splash-screen";
-
+import SplashScreen from 'react-native-splash-screen';
 
 const Stack = createStackNavigator();
 
@@ -30,57 +29,44 @@ function App() {
   const dispatch = useDispatch();
   const {isAuthenticated, user} = useSelector(state => state.user);
   const {offers} = useSelector(state => state.offer);
+
+  const [userr, setUserr] = useState(null);
+
   useEffect(() => {
-    dispatch(getMyProfile());
-    dispatch(getAllOffers())
-    dispatch(getUserEarnings(user?._id));
-    storageUser();
-    storageOffer()
+    // dispatch(getMyProfile());
+    dispatch(getAllOffers());
+    // dispatch(getUserEarnings(user?._id));
+
+    AsyncStorage.getItem('user').then(savedUser => {
+      if (savedUser) {
+        setUserr(JSON.parse(savedUser)); // Parse the JSON data
+      } else {
+        dispatch(getMyProfile());
+        dispatch(getUserEarnings(user?._id));
+      }
+    });
   }, [dispatch]);
+
+  useEffect(() => {
+    if (user) {
+      AsyncStorage.setItem('user', JSON.stringify(user));
+      setUserr(user);
+    }
+    if(!isAuthenticated){
+      setUserr(null)
+    }
+  }, [user,isAuthenticated]);
   
+
   useEffect(() => {
     SplashScreen.hide();
-  }, [])
-  
-  const storageUser = async () => {
-    let userr = await AsyncStorage.getItem('user');
-    let isAuthenticatedd = await AsyncStorage.getItem('isAuthenticated');
-    if (!userr && user) {
-      try {
-        await AsyncStorage.setItem('user', user);
-      } catch (error) {
-        console.log(error);
-      }
-    }
+  }, []);
 
-    if (!isAuthenticatedd && isAuthenticated) {
-      try {
-        await AsyncStorage.setItem('isAuthenticated', isAuthenticated.toString());
-      } catch (error) {
-        console.log(error);
-      }
-    }
-  };
-
-  const storageOffer = async () => {
-    let offerss = await AsyncStorage.getItem('offers');
-    if (!offerss && offers) {
-      try {
-        await AsyncStorage.setItem('offers', offers);
-      } catch (error) {
-        console.log(error);
-      }
-    }
-  };
 
   return (
     <NavigationContainer>
       <ForegroundNotification />
-      {isAuthenticated ? (
-        <AppNavigator />
-      ) : (
-        <AuthNavigator />
-      )}
+      {isAuthenticated || userr ? <AppNavigator /> : <AuthNavigator />}
     </NavigationContainer>
   );
 }
@@ -155,7 +141,6 @@ const AppNavigator = () => {
       screenOptions={{
         headerShown: false,
       }}>
-      
       <Stack.Screen name="Welcome" component={Welcome} />
       <Stack.Screen name="HomeTab" component={Home} />
       <Stack.Screen name="OfferDetail" component={OfferDetailsScreen} />
